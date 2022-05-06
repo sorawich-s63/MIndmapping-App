@@ -1,40 +1,40 @@
 import { Presentation, Slide, Text, Shape } from "react-pptx";
 import Preview from "react-pptx/preview";
-import React, { useRef, useState, useEffect, createRef } from "react";
+import React, { useRef, createRef } from "react";
 
-export default function Present(props) {
+export default function Present() {
   let data = JSON.parse(localStorage.getItem("present"));
-  var temp = []; 
-  var k = 0;
   var slidearray = [];
 
+  var temp = []; 
+  var k = 0;
   const topic = useRef(null)
 
   const prevslide = async () => {
+    
     if (k <= 0) {
       window.scrollTo({
-        top: topic.current.offsetTop,
+        top: temp[0].current.offsetTop,
       })
     } else {
       k--
       window.scrollTo({
         top: temp[k].current.offsetTop,
       })
-      
-      console.log(k)
     }
   }
 
   const nextslide = () => {
-
+    
     if (k >= slidearray.length) {
-      return
+      window.scrollTo({
+        top: temp[slidearray.length].current.offsetTop,
+      })
     } else {
+      k++
       window.scrollTo({
         top: temp[k].current.offsetTop,
       })
-      k++
-      console.log(k)
     }
   }
 
@@ -186,14 +186,12 @@ export default function Present(props) {
   DFS(data.Root, data.Allnode);
 
   function changeslide() {
-    var array = []
+    var array = [topic]
     
     slidearray.map((x, i) => {
-      array[i] = createRef()
+      array[i+1] = createRef()
       temp = array
     })
-    array[0] = createRef()
-    console.log(temp)
   }
 
 
@@ -203,7 +201,7 @@ export default function Present(props) {
       <div onClick={prevslide} className="Back-button"/>
       <div onClick={nextslide} className="Next-button"/>
       <div>
-        <div ref={topic}>
+        <div ref={temp[0]}>
           <Preview>
             <Presentation>
               <Slide>
@@ -225,7 +223,7 @@ export default function Present(props) {
         </div>
         <div>
           {slidearray.map((x, i) => (
-            <div ref={temp[i]}>
+            <div ref={temp[i+1]}>
               {x}
             </div>
           ))}
