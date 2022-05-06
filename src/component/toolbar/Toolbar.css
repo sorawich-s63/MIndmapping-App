@@ -13,6 +13,17 @@
   display: inline-block;
 }
 
+.preview {
+  position: relative;
+  top:4px;
+  padding: 6px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 22px;
+  display: inline-block;
+}
+
 .bm-toolbar-item-disabled {
   color: grey;
 }
@@ -56,3 +67,4 @@
   height: 600px;
   overflow: auto;
 }
+

@@ -1,18 +1,14 @@
 import cx from "classnames";
 import { iconClassName } from "@blink-mind/renderer-react";
-import { Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
+import { Menu, MenuItem, Popover } from "@blueprintjs/core";
 import React from "react";
-import pptxgen from "pptxgenjs";
 import { downloadFile } from "../../utils";
-import Popup from "reactjs-popup";
-import { Link } from "react-router-dom";
-import "./modal.css";
+
 
 export function ToolbarItemExport(props) {
-  let pres = new pptxgen();
   let Allnode = [];
   let Root = { topic: "", child: [] };
-
+  const { modal,imgexport } = props
   const onClickExportJson = (e) => {
     const { diagram } = props;
     const diagramProps = diagram.getDiagramProps();
@@ -41,7 +37,7 @@ export function ToolbarItemExport(props) {
       let Node = JSON.stringify(data[i]);
       Node = JSON.parse(Node);
       // find root node
-      if (data[i].parentKey == null) {
+      if (data[i].parentKey === null) {
         Root.topic = Node.blocks[0].data;
         Root.child = Node.subKeys;
       } else {
@@ -55,6 +51,15 @@ export function ToolbarItemExport(props) {
     }
   };
 
+  function onClickExportSlide() {
+    getdata()
+    localStorage.setItem(
+      "selectpresent",
+      JSON.stringify({ Root: Root, Allnode: Allnode })
+    )  
+    modal()
+  }
+
   return (
     <div
       className={cx("bm-toolbar-item", iconClassName("export"))}
@@ -64,21 +69,8 @@ export function ToolbarItemExport(props) {
         <div className="bm-toolbar-popover-target" />
         <Menu>
           <MenuItem text="JSON(.json)" onClick={onClickExportJson} />
-          <MenuItem text="IMAGE(.pdf)" />
-          <MenuDivider />
-          <Link
-            to="/selectpresent"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() =>
-              localStorage.setItem(
-                "selectpresent",
-                JSON.stringify({ Root: Root, Allnode: Allnode })
-              )
-            }
-          >
-            <MenuItem text="SLIDE(.pptx)" onClick={getdata} />
-          </Link>
+          <MenuItem text="IMAGE(.png)" onClick={imgexport}/>
+          <MenuItem text="SLIDE(.pptx)" onClick={onClickExportSlide} />
         </Menu>
       </Popover>
     </div>

@@ -8,11 +8,11 @@ import { TopicReferencePlugin, SearchPlugin } from "@blink-mind/plugins";
 import { Toolbar } from "./toolbar/toolbar";
 import { generateSimpleModel } from "../utils";
 import "@blink-mind/renderer-react/lib/main.css";
-import { ScreenCapture } from 'react-screen-capture';
-import Capture from "./icon/capture.png"
-
-// import debug from "debug";
-// const log = debug("app");
+import Modal from "./toolbar/modal";
+import html2canvas from "html2canvas";
+import { downloadFile } from "../utils";
+import Help from './icon/help.png'
+import Helphover from './icon/helphover.png'
 
 const plugins = [
   RichTextEditorPlugin(),
@@ -24,10 +24,18 @@ const plugins = [
 ];
 
 export class Mindmap extends React.Component {
+
   constructor(props) {
     super(props);
+    this.state = {
+      show: false,
+      help: false
+    }
+    this.handlemodal = this.handlemodal.bind(this);
+    this.onClickExportImage = this.onClickExportImage.bind(this);
     this.initModel();
   }
+
 
   diagram;
   diagramRef = ref => {
@@ -72,8 +80,10 @@ export class Mindmap extends React.Component {
       diagram: this.diagram,
       onClickUndo: this.onClickUndo,
       onClickRedo: this.onClickRedo,
+      modal: this.handlemodal,
+      imgexport: this.onClickExportImage,
       canUndo,
-      canRedo
+      canRedo,
     };
     return <Toolbar {...toolbarProps} />;
   }
@@ -87,40 +97,48 @@ export class Mindmap extends React.Component {
     );
   };
 
-  handleScreenCapture = async (screenCapture) => {
-    this.setState({screenCapture});
-    const screenCaptureSource = await this.state.screenCapture;
-    const downloadLink = document.createElement('a');
-    const fileName = 'react-screen-capture.png';
+  handlemodal() {
+    this.setState({
+      show: !this.state.show
+    })
+    console.log(this.renderDiagram())
+  }
 
-    downloadLink.href = screenCaptureSource;
-    downloadLink.download = fileName;
-    downloadLink.click();
-  };
+  onClickExportImage() {
+    const props = this.diagram.getDiagramProps();
+    const { controller, model } = props;
+    const title = controller.run("getTopicTitle", {
+      ...props,
+      topicKey: model.rootTopicKey,
+    });
+    const input = document.getElementsByClassName("sc-htpNat bBgaoq")
 
+    html2canvas(input[0]).then((canvas) => {
+      const imgdata = canvas.toDataURL('img/png')
+      downloadFile(imgdata, `${title}.png`)
+    })
+  }
+
+  
   render() {
-    return (  
-    <ScreenCapture onEndCapture={this.handleScreenCapture}>
-      {({ onStartCapture }) => (
+    return (
+      <div>
+        {this.state.show ? <Modal setmodal={this.handlemodal} /> : null}
         <div className="mindmap">
-          <img
-          src = {Capture}
-          style = {
-            {
-              position: "absolute",
-              left: "320px",
-              top: "5px",
-              width : "30px"
-            }
-          }
-          title = "Capture"
-          onClick={onStartCapture}  
-          />
           {this.diagram && this.renderToolbar()}
-          {this.renderDiagram()}  
+          {this.renderDiagram()}
         </div>
-      )}
-      </ScreenCapture>
+        <div className="help">
+          <img
+            className="helpicon"
+            src={this.state.help ? Helphover : Help}
+            alt={'icon'}
+            title="Present"
+            onMouseOver={() => this.setState({help: true})}
+            onMouseOut={() => this.setState({help: false})}
+          />
+        </div>
+      </div>
     );
   }
 }

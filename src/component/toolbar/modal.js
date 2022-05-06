@@ -1,8 +1,9 @@
 import pptxgen from "pptxgenjs";
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import "./modal.css";
 
-export default function Select(props) {
+export default function Modal({ setmodal }) {
   let pres = new pptxgen();
   let data = JSON.parse(localStorage.getItem("selectpresent"));
   let Allnode = data.Allnode;
@@ -157,7 +158,7 @@ export default function Select(props) {
     let temp = [];
     Roottemp = { ...Root };
     for (let i = 0; i < Root.child.length; i++) {
-      if (checkedState[i] == true) {
+      if (checkedState[i] === true) {
         temp.push(Root.child[i]);
       }
     }
@@ -170,7 +171,7 @@ export default function Select(props) {
     Roottemp = { ...Root };
     console.log(Root);
     for (let i = 0; i < Root.child.length; i++) {
-      if (checkedState[i] == true) {
+      if (checkedState[i] === true) {
         temp.push(Root.child[i]);
       }
     }
@@ -179,46 +180,59 @@ export default function Select(props) {
     console.log(Roottemp);
   };
 
+  const modalRef = useRef()
+  const closeModal = e => {
+    if (modalRef.current === e.target) {
+      setmodal()
+    }
+  };
+
   return (
-    <div>
-      <h1>Select export slide</h1>
-      <h2>{Root.topic}</h2>
-      <ul className="slide-list">
-        {checklist.map((topic, index) => {
-          return (
-            <li key={index}>
-              <div className="toppings-list-item">
-                <div className="left-section">
-                  <input
-                    type="checkbox"
-                    id={`custom-checkbox-${index}`}
-                    name={topic}
-                    value={topic}
-                    checked={checkedState[index]}
-                    onChange={() => handleOnChange(index)}
-                  />
-                  <label htmlFor={`custom-checkbox-${index}`}>{topic}</label>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      <div>
-        <button onClick={exportsecelcslide}>Export</button>
-        <Link
-          to="/present"
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() =>
-            localStorage.setItem(
-              "present",
-              JSON.stringify({ Root: Roottemp, Allnode: Allnode })
-            )
-          }
-        >
-          <button onClick={previewslide}>Preview</button>
-        </Link>
+    <div className='modalBackground' onClick={closeModal} ref={modalRef}>
+      <div className='modalContainer'>
+        <div className="title">
+          <h1>SELECT SLIDE</h1>
+        </div>
+        <div className="modalContent">
+          <h2 style={{fontsize:'30px'}}>{Root.topic}</h2>
+          <ul className="slide-list">
+            {checklist.map((topic, index) => {
+              return (
+                <li key={index}>
+                  <div className="toppings-list-item">
+                    <div className="left-section">
+                      <input
+                        type="checkbox"
+                        id={`custom-checkbox-${index}`}
+                        name={topic}
+                        value={topic}
+                        checked={checkedState[index]}
+                        onChange={() => handleOnChange(index)}
+                      />
+                      <label htmlFor={`custom-checkbox-${index}`}>{topic}</label>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div className="footer">
+          <button onClick={exportsecelcslide}>Export</button>
+          <Link
+            to="/present"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() =>
+              localStorage.setItem(
+                "present",
+                JSON.stringify({ Root: Roottemp, Allnode: Allnode })
+              )
+            }
+          >
+            <button onClick={previewslide}>Preview</button>
+          </Link>
+        </div>
       </div>
     </div>
   );

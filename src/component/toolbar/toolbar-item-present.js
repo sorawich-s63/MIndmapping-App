@@ -1,7 +1,8 @@
-import cx from "classnames";
 import { iconClassName } from "@blink-mind/renderer-react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Preview from "../icon/preview.png";
+import hover from "../icon/previewhover.png"
 
 export function ToolbarItemPresent(props) {
   let Allnode = [];
@@ -34,22 +35,29 @@ export function ToolbarItemPresent(props) {
         Allnode.push(temp);
       }
     }
-
     console.log(Root);
     console.log(Allnode);
   };
 
+  const [open, setOpen] = useState('')
+
   return (
+
     <Link to="/present"
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => localStorage.setItem('present', JSON.stringify({ Root: Root, Allnode: Allnode }))}
-      state={{ Root: Root, Allnode: Allnode }}>
-      <div
-        className={cx("bm-toolbar-item", iconClassName("export"))}
+      state={{ Root: Root, Allnode: Allnode }}
+    >
+      <img
+        className={`preview ${iconClassName("")}`}
+        src={open ? hover : Preview}
+        alt={'icon'}
         title="Present"
+        onMouseOver={() => setOpen(true)}
+        onMouseOut={() => setOpen(false)}
         onClick={getData}
-      ></div>
+      />
     </Link>
   );
 }
