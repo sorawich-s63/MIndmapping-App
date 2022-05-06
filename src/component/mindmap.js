@@ -13,6 +13,7 @@ import html2canvas from "html2canvas";
 import { downloadFile } from "../utils";
 import Help from './icon/help.png'
 import Helphover from './icon/helphover.png'
+import Create from "./help/help";
 
 const plugins = [
   RichTextEditorPlugin(),
@@ -29,10 +30,12 @@ export class Mindmap extends React.Component {
     super(props);
     this.state = {
       show: false,
-      help: false
+      help: false,
+      showhelp:false
     }
     this.handlemodal = this.handlemodal.bind(this);
     this.onClickExportImage = this.onClickExportImage.bind(this);
+    this.handleshowhelp = this.handleshowhelp.bind(this)
     this.initModel();
   }
 
@@ -101,7 +104,6 @@ export class Mindmap extends React.Component {
     this.setState({
       show: !this.state.show
     })
-    console.log(this.renderDiagram())
   }
 
   onClickExportImage() {
@@ -119,11 +121,18 @@ export class Mindmap extends React.Component {
     })
   }
 
+  handleshowhelp(){
+    this.setState({
+      showhelp : !this.state.showhelp
+    })
+  }
+
   
   render() {
     return (
       <div>
         {this.state.show ? <Modal setmodal={this.handlemodal} /> : null}
+        {this.state.showhelp ? <Create setshowhelp={this.handleshowhelp} /> : null}
         <div className="mindmap">
           {this.diagram && this.renderToolbar()}
           {this.renderDiagram()}
@@ -136,6 +145,7 @@ export class Mindmap extends React.Component {
             title="Present"
             onMouseOver={() => this.setState({help: true})}
             onMouseOut={() => this.setState({help: false})}
+            onClick={() => this.setState({showhelp: !this.state.showhelp})}
           />
         </div>
       </div>
