@@ -8,7 +8,7 @@ import { TopicReferencePlugin, SearchPlugin } from "@blink-mind/plugins";
 import { Toolbar } from "./toolbar/toolbar";
 import { generateSimpleModel } from "../utils";
 import "@blink-mind/renderer-react/lib/main.css";
-import Modal from "./toolbar/modal";
+import Modal from "./slide/slide";
 import html2canvas from "html2canvas";
 import { downloadFile } from "../utils";
 import Help from './icon/help.png'

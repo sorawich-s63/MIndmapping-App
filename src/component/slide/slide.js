@@ -1,7 +1,7 @@
 import pptxgen from "pptxgenjs";
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import "./modal.css";
+import "./slide.css";
 
 export default function Modal({ setmodal }) {
   let pres = new pptxgen();
