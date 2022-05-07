@@ -6,11 +6,14 @@ export function ToolbarItemOpen(props) {
     const { diagram } = props;
     const diagramProps = diagram.getDiagramProps();
     const { controller } = diagramProps;
+
     browserOpenFile(".json,.blinkmind,.bm").then(txt => {
       let obj = JSON.parse(txt);
       let model = controller.run("deserializeModel", { controller, obj });
       diagram.openNewModel(model);
-    });
+    }).then(() => {
+      localStorage.clear()
+    })
   };
   return (
     <div

@@ -57,6 +57,10 @@ export function ToolbarItemExport(props) {
       "selectpresent",
       JSON.stringify({ Root: Root, Allnode: Allnode })
     )  
+    if(!localStorage.getItem("checkslide") && !localStorage.getItem("model")) {
+      localStorage.setItem('model',JSON.stringify(Root.topic))
+      localStorage.setItem('checkslide', JSON.stringify(new Array(Root.child.length).fill(true)))
+    }
     modal()
   }
 

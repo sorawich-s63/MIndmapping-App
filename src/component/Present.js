@@ -185,7 +185,7 @@ export default function Present() {
 
   DFS(data.Root, data.Allnode);
 
-  const changeslide = () => {
+  function changeslide() {
     var array = [topic]
     slidearray.map((x, i) => {
       array[i+1] = createRef()

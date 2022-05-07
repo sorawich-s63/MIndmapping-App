@@ -34,15 +34,16 @@ export default function Modal({ setmodal }) {
       },
     ],
   });
+
   const [checkedState, setCheckedState] = useState(
-    new Array(Root.child.length).fill(true)
+    JSON.parse(localStorage.getItem("checkslide"))
   );
+  
 
   const handleOnChange = (position) => {
     const updatedCheckedState = checkedState.map((item, index) =>
       index === position ? !item : item
     );
-
     setCheckedState(updatedCheckedState);
   };
 
@@ -176,13 +177,12 @@ export default function Modal({ setmodal }) {
       }
     }
     Roottemp.child = temp;
-    console.log(Root);
-    console.log(Roottemp);
   };
 
   const modalRef = useRef()
   const closeModal = e => {
     if (modalRef.current === e.target) {
+      localStorage.setItem('checkslide', JSON.stringify(checkedState))
       setmodal()
     }
   };
